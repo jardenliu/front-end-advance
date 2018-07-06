@@ -12,6 +12,10 @@
 
 从`test`文件夹顺序查看
 
+## 文档
+* [官方文档](https://mochajs.org/)
+* [中文文档](https://segmentfault.com/a/1190000011362879)
+
 ## Mocha的安装
 
 全局安装：
