@@ -6,11 +6,11 @@
 
 [![Selenium Test Status](https://saucelabs.com/browser-matrix/shouldjs.svg)](https://saucelabs.com/u/shouldjs)
 
-_should_ 是一个具有表现力、可读性好、与框架无关的断言库。这个库的主要目标是 __表述性__ 和 __有效性__ ，它保持了你的测试代码的整洁和错误信息的有效性。
+_should_ 是一个具有表现力、可读性好、与框架无关的断言库。这个库的主要目标是 __表述性__ 和 __有效性__ ，它保持了你的测试代码的整洁和错误信息的有效性。
 
-通常情况下（当你`require('should')`的时候），_should_ 会拓展 `Object.prototype` 一个不可枚举的getter，会允许你去表述一个对象应该如何表现。必要时，可以通过`require 也会返回` _should_ 自己本身
+通常情况下（当你`require('should')`的时候），_should_ 会拓展 `Object.prototype` 一个不可枚举的getter，会允许你去表述一个对象应该如何表现。必要时，可以通过`require 也会返回` _should_ 自己本身
 
-也可以使用不带getter的`should.js`(它甚至不会尝试拓展`Object.prototype`)，只需要 `require('should/as-function')`，或者你已经使用了自动添加getter的版本，你可以调用`.noConflict`函数。
+也可以使用不带getter的`should.js`(它甚至不会尝试拓展`Object.prototype`)，只需要 `require('should/as-function')`，或者你已经使用了自动添加getter的版本，你可以调用`.noConflict`函数。
 
 `(某个对象).should` getter的结果和`should(某个对象)`在大多数情况下是相同的。
 
@@ -36,10 +36,10 @@ user.should.have.property('pets').with.lengthOf(4);
 
 // 假设对象是通过Object.create(null)来创建的
 // 这时它不会继承`Object.prototype`,所以不会有`.should` getter
-// 所以你可以这样做
+// 所以你可以这样做
 should(user).have.property('name', 'tj');
 
-// 你也可以用过这种方式测试null
+// 你也可以用过这种方式测试null
 should(null).not.be.ok();
 
 someAsyncTask(foo, function(err, result){
@@ -109,14 +109,14 @@ bower install shouldjs/should.js
 
 ## .any
 
-`.any` 允许有多个参数的断言来断言任何参数（但不是全部）。这类似于原生js[array.some](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some).
+`.any` 允许有多个参数的断言来断言任何参数（但不是全部）。这类似于原生js[array.some](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some).
 
 # 断言
 ## 链式断言
 
 每个断言都会返回一个`should.js`包装的对象。所以断言能够被串联起来。
 
-为了方便链式断言能够更清晰的阅读，你可以在链块中使用下面的关键字属性：`.an`, `.of`, `.a`, `.and`, `.be`, `.have`, `.with`, `.is`, `.which`.使用它们提高可读性，它们实质上不起其他任何作用。
+为了方便链式断言能够更清晰的阅读，你可以在链块中使用下面的关键字属性：`.an`, `.of`, `.a`, `.and`, `.be`, `.have`, `.with`, `.is`, `.which`.使用它们提高可读性，它们实质上不起其他任何作用。
 
 举个例子:
 ```js
@@ -130,7 +130,7 @@ user.pets.should.be.instanceof(Array).and.have.lengthOf(4);
 添加属于自己的断言很简单，你只需要调用 `should.Assertion.add`这个函数，他接受两个参数:
 
 1. 断言函数的名字（String）
-2. 断言的函数（Function）
+2. 断言的函数（Function）
 
 
 断言的方法应该做什么，它应该只检查正面的情况。 `should`将会处理`.not` 本身。
@@ -140,15 +140,15 @@ user.pets.should.be.instanceof(Array).and.have.lengthOf(4);
 
 - `operator` - 描述断言的字符串
 - `actual` -  实际值    你可以假设它是你自己的 this.obj, 如果你需要自己定义
-- `expected` - 期望值 任意与this.obj匹配的值
+- `expected` - 期望值 任意与this.obj匹配的值
 
-你可以假设它用来生成AssertionError的信息，如：期望`obj`？或者 不等于 this.obj？ `断言描述` `期望值`?
+你可以假设它用来生成AssertionError的信息，如：期望`obj`？或者 不等于 this.obj？ `断言描述` `期望值`?
 
 You can assume its usage in generating AssertionError message like: expected `obj`? || this.obj not? `operator` `expected`?
 
 在 `should` 消息来源的方法中有两种这样的用法。
 
-第一种：（不推荐）仅仅用在其他断言的快捷方式中，例如怎么定义`.should.be.true()`：
+第一种：（不推荐）仅仅用在其他断言的快捷方式中，例如怎么定义`.should.be.true()`：
 
 ```javascript
 Assertion.add('true', function() {
