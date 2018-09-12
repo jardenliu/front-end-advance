@@ -166,7 +166,7 @@ Firefox在存在样式表还在加载和解析时阻塞所有的脚本
 - 作者的important声明
 - 用户important声明
 
-####specifity
+#### specifity
 如果声明来自style属性，而不是一个选择器的规则，则计1，否则计0（＝a）
 
 计算选择器中id属性的数量（＝b）
