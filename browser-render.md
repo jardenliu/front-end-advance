@@ -195,3 +195,49 @@ Firefox在存在样式表还在加载和解析时阻塞所有的脚本
 #### 事件循环
 * 浏览器主线程是一个事件循环，它被设计为无限循环以保持执行过程的可用，等待事件（例如layout和paint事件）并执行它们
 
+## 回流与重绘
+* **reflow**:当render树中的一部分或者全部因为大小边距等问题发生改变而需要重建的过程叫做回流
+* **repaint**:当元素的一部分属性发生变化，如外观背景色不会引起布局变化而需要重新渲染的过程叫做重绘
+
+#### 回流何时发生：
+当页面布局和几何属性改变时就需要回流。下述情况会发生浏览器回流：
+1. 添加或者删除可见的DOM元素；
+2. 元素位置改变；
+3. 元素尺寸改变——边距、填充、边框、宽度和高度
+4. 内容改变——比如文本改变或者图片大小改变而引起的计算值宽度和高度改变；
+5. 页面渲染初始化；
+6. 浏览器窗口尺寸改变——resize事件发生时
+
+```js
+var s = document.body.style;
+s.padding = "2px"; // 回流+重绘
+s.border = "1px solid red"; // 再一次 回流+重绘
+s.color = "blue"; // 再一次重绘
+s.backgroundColor = "#ccc"; // 再一次 重绘
+s.fontSize = "14px"; // 再一次 回流+重绘
+// 添加node，再一次 回流+重绘
+document.body.appendChild(document.createTextNode('abc!'));
+
+```
+
+#### 如何减少回流、重绘
+1. 直接改变className，如果动态改变样式，则使用cssText（考虑没有优化的浏览器）
+```js
+// 不好的写法
+var left = 1;
+var top = 1;
+el.style.left = left + "px";
+el.style.top = top + "px";// 比较好的写法
+el.className += " className1";
+// 比较好的写法
+el.style.cssText += "; left: " + left + "px;top: " + top + "px;";
+```
+2. 让要操作的元素进行”离线处理”，处理完后一起更新
+    1. 使用DocumentFragment进行缓存操作,引发一次回流和重绘；
+    2. 使用display:none技术，只引发两次回流和重绘；
+    3. 使用cloneNode(true or false) 和 replaceChild 技术，引发一次回流和重绘；
+
+3. 让元素脱离动画流，减少回流的Render Tree的规模
+
+
+
