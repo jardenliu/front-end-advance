@@ -165,8 +165,8 @@ module.exports = function (...args) {
 };
 ```
 ```js
+// test.js
 const assert = require('assert');
-
 const sum = require('../sum');
 
 describe('#hello.js', () => {
@@ -197,6 +197,7 @@ describe('#hello.js', () => {
 
 
 ***生命周期***
+
 mocha的每个测试套件(describe)都有一个生命周期，`before`、`after`、`beforeEach`、`afterEach`
 ```
 describe("liftcycle",()=>{
@@ -221,7 +222,7 @@ describe("liftcycle",()=>{
 
 ***异步测试***
 
-mocha提供了回调`done`和`返回promise`的方式来实现异步测试。也支持async和await
+mocha提供了回调`done`和`返回promise`的方式来实现异步测试。也支持`async`和`await`
 ```js
 describe('setTimeout',(){
   it('set delay 1000ms',done=>{
