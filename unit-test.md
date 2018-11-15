@@ -256,13 +256,109 @@ describe('Promise',(){
 karma可用于测试所有主流Web浏览器，也可集成到CI工具，也可和其他代码编辑器(例如webstrom)一起使用。这个测试工具的一个强大特性就是，它可以监控(Watch)文件的变化，然后自行执行，通过console.log显示测试结果。
 
 Karma有一下几个特点：
-1. 可以在真实浏览器中测试代码。
+1. 可以在真实环境中测试代码。
 2. 可以在本地测试，也可以在持续集成服务器上执行测试。
-3. 自动监听文件修改，保存时执行你的测试。
 4. 兼容 Istanbul 自动生成覆盖率报告。
 5. 兼容RequireJS
+6. 支持远程控制
+8. 支持调试
+
+karma初始化
+```bash
+ $ karma init
+```
+通过`karma init`会生成一个`karma.conf.js`。
+
+```js
+module.exports = function(config) {
+  config.set({
+
+    // base path：是用于匹配其他相对路径的基础路径（如：files和exclude）
+    basePath: '',
+
+    // 框架：被用于测试使用到的框架如mocha chai等
+    // 可用框架可查看: https://npmjs.org/browse/keyword/karma-adapter
+    frameworks: ['mocha'],
 
 
-Karma还具有一下的优点
+    // 加载到浏览器测试的文件，支持通配符
+    files: [
+      'test/**/*Spec.js'
+    ],
 
-## 覆盖率
+
+    // 在files中不被匹配到的文件，支持通配符
+    exclude: [
+    ],
+
+
+    // 在启动浏览器之前预加载匹配到的文件
+    // 可用的预加载器: https://npmjs.org/browse/keyword/karma-preprocessor
+    preprocessors: {
+    },
+
+
+    // 测试报告采用什么展示
+    // 参数如: 'dots', 'progress'
+    // 可用的报告器见: https://npmjs.org/browse/keyword/karma-reporter
+    reporters: ['progress'],
+
+
+    // WEB服务的端口
+    port: 9876,
+
+
+    // 输出是否使用颜色
+    colors: true,
+
+
+    // 日志等级
+    // 参数如: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
+    logLevel: config.LOG_INFO,
+
+
+    // 每次测试文件被修改的时候是否自动执行测试脚本
+    autoWatch: true,
+
+
+    // 开启哪些浏览器进行测试
+    // 可用的浏览器启动器见: https://npmjs.org/browse/keyword/karma-launcher
+    browsers: ['Chrome'],
+
+
+    // CI模式
+    // 如果设置成true，测试在完成后会线程会关闭，只运行一次
+    singleRun: false,
+
+    // 并发等级
+    // 允许有多少个浏览器同时进行测试，Infinity为无限制，1为1个
+    concurrency: Infinity
+  })
+}
+```
+
+karma具有强大的拓展性
+1. 允许通过不同的frameworks来进行拓展测试框架，增强测试的功能
+2. 允许通过preprocessors来进行预编译各种需要测试的文件。
+3. 允许通过reporters来收集不同框架产生的测试报告
+4. 允许通过browsers来增加不同的测试环境
+
+***ES6测试***
+可以通过`karma-webpack`这个预编译器,使用babel来对ES6文件的编译，然后再到浏览器中进行测试工作。配置方法详见：[karma-webpack](https://github.com/webpack-contrib/karma-webpack)
+
+##### 覆盖率
+此处的覆盖率指的是`代码覆盖`，是软件测试中的一种度量，描述程式中源代码被测试的`比例`和`程度`，所得比例称为代码覆盖率。
+
+常见的覆盖率有以下几种：
+- 函式覆盖率（Function coverage）：有呼叫到程式中的每一个函式（或副程式）吗？
+- 指令覆盖率（Statement coverage）：若用控制流图表示程式，有执行到控制流图中的每一个节点吗？
+- 判断覆盖率（Decision coverage）：（和分支覆盖率不同）若用控制流图表示程式，有执行到控制流图中的每一个边吗？例如控制结构中所有IF指令都有执行到逻辑= 运算式成立及不成立的情形吗？
+- 条件覆盖率（Condition coverage）：也称为谓词覆盖（predicate coverage），每一个逻辑运算式中的每一个条件（无法再分解的逻辑运算式）是否都有执行到成立及不成立的情形吗？条件覆盖率成立不表示判断覆盖率一定成立。
+- 条件/判断覆盖率（Condition/decision coverage）：需同时满足判断覆盖率和条件覆盖率。
+
+`istanbul` 是 JavaScript 程序的代码覆盖率工具，在karma中有在istanbul上封装的工具`karma-coverage`。
+
+karma-coverage能够生成丰富有效的覆盖率报告，集成和配置方式详见：[karma-coverage](https://github.com/karma-runner/karma-coverage)
+
+
+
