@@ -87,6 +87,48 @@ should.js同时具有很好的拓展性，可以自定义链、自定义断言�
 ```
 
 #### chai.js
+chai是一套TDD(测试驱动开发)/BDD(行为驱动开发)的断言框架,它包含有3个断言库支持BDD风格的expect/should和TDD风格的assert。chai包含的assert和should只是参照上述介绍的assert和should.js的重新实现，并不是同一个东西。
+
+官方示例：
+```js
+Should
+chai.should();
+
+foo.should.be.a('string');
+foo.should.equal('bar');
+foo.should.have.lengthOf(3);
+tea.should.have.property('flavors')
+  .with.lengthOf(3);
+                
+```
+
+```js
+Expect
+var expect = chai.expect;
+
+expect(foo).to.be.a('string');
+expect(foo).to.equal('bar');
+expect(foo).to.have.lengthOf(3);
+expect(tea).to.have.property('flavors')
+  .with.lengthOf(3);
+                
+```
+
+```js
+Assert
+var assert = chai.assert;
+
+assert.typeOf(foo, 'string');
+assert.equal(foo, 'bar');
+assert.lengthOf(foo, 3)
+assert.property(tea, 'flavors');
+assert.lengthOf(tea.flavors, 3);
+                
+```
+
+chai.js除了有丰富的api意外，更具特色的是它支持`插件拓展`，可以自己编写和使用各种插件，以满足你不同的测试需要。
+
+官方文档：[chai文档](https://www.chaijs.com/)
 
 
 
