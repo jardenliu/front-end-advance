@@ -199,7 +199,7 @@ describe('#hello.js', () => {
 ***生命周期***
 
 mocha的每个测试套件(describe)都有一个生命周期，`before`、`after`、`beforeEach`、`afterEach`
-```
+```js
 describe("liftcycle",()=>{
   before(){
     // 该describe运行开始时候执行
