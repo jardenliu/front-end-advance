@@ -23,8 +23,8 @@ TDD是先编写测试业务代码，然后再检验业务的正确性，更倾�
 ## 断言库
 断言是编程术语，表示为一些布尔表达式，程序员相信在程序中的某个特定点该表达式值为真。简言之就是“下定论"。断言库
 
-#### 1.assert(node.js原生断言库)
-> assert模块提供了简单的断言测试功能，可以通过require(‘assert’)进行使用。当断言表达式不成立的时候会抛出`AssertionError`。
+#### 1.assert(node.js原生断言库) 
+(TDD风格)assert模块提供了简单的断言测试功能，可以通过require(‘assert’)进行使用。当断言表达式不成立的时候会抛出`AssertionError`。
 
 常用的是Api如下：
 ```js
@@ -52,9 +52,41 @@ TDD是先编写测试业务代码，然后再检验业务的正确性，更倾�
   // 与assert.throws 刚好相反
   assert.doesNotThrow(block[, error][, message])
 ```
+官方文档链接：[Assert | Node.js](https://nodejs.org/api/assert.html)
 
-#### should.js
 
+#### 2.should.js
+   should.js是一种典型的`BDD风格`的断言库，测试代码更加语义化，让断言的可读性更好。主要特点就是支持链式调用，有很多链式属性能方便编写者书写测试代码。如`.an`, `.of`, `.a`, `.and`, `.be`, `.have`, `.with`, `.is`, `.which`。
+
+例如：
+```js
+var user = {
+    name: 'tj',
+    pets: ['tobi', 'loki', 'jane', 'bandit']
+};
+
+user.should.be.an.instanceOf(Object).and.have.property('name', 'tj');
+user.pets.should.be.instanceof(Array).and.have.lengthOf(4);
+```
+should.js也提供了丰富的断言api，布尔值判断(`.ok`、`.true`、`.false`)，类型判断(`.Object`, `.Number`, `.Array`, `.Boolean`, `.Function`, `.String`, `.Error`)、值比较(`.eql`、`.exactly`、`.above`,`.below`)、字符串判断(`.startWith`、`.endWith`、)等等。此处不一一列举。详见文档[should.js文档](https://shouldjs.github.io/)
+
+should.js同时具有很好的拓展性，可以自定义链、自定义断言等。
+例：
+```js
+  const Assertion = should.Assertion
+  Assertion.addChain('notAny',function(){
+    this.anyOne = false
+  })
+  
+  Assertion.add('rich',function(){
+    this.params = {opreator:'to be a rich man'}
+    this.obj.should.have.propety('money').which.is.a.Number()
+    this.obj.money.should.above(1000000)
+  })
+
+```
+
+#### chai.js
 
 
 
