@@ -1,0 +1,25 @@
+{
+  "name": "monitor-demo",
+  "version": "0.0.1",
+  "description": "just an example for share meeting",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jardenliu/front-end-advance.git"
+  },
+  "keywords": [
+    "monitor"
+  ],
+  "author": "jardenliu",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jardenliu/front-end-advance/issues"
+  },
+  "homepage": "https://github.com/jardenliu/front-end-advance#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
