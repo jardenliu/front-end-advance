@@ -33,7 +33,7 @@
 
 下图是精度更高，功能更强大，层次更分明的 Level 2模型，独立划分出来的 Resource Timing，使得我们可以获取具体资源的详细耗时信息
 
-![图2](https://raw.githubusercontent.com/jardenliu/front-end-advance/master/monitor/image/performance2.svg)
+![图2](https://raw.githubusercontent.com/jardenliu/front-end-advance/master/monitor/image/performance2.png)
 
 #### 指标解读
 | 指标                       | 描述                                                                         |
@@ -61,8 +61,49 @@
 | loadEventEnd               | onload事件结束的时间                                                         |
 | domLoading                 | 准备加载页面的起始时间                                                       |
 
+#### 采集页面性能的关键指标
+使用上面的指标，我们可以计算许多重要的指标，如首字节的时间，页面加载时间，dns查找以及连接是否安全。我们把 Navigation Timing API 提供的指标做下归类，按照从上到下的时间流，右边的时刻标记了每个指标从哪里开始计算到哪里截止，比如，跳转时间 redirect 由 redirectEnd - redirectStart 计算得到，其他的类推。
 
+![图3](https://raw.githubusercontent.com/jardenliu/front-end-advance/master/monitor/image/performance3.bmp)
 
+```javasscript
+let times = {};
+let t = window.performance.timing;
+
+//重定向时间
+times.redirectTime = t.redirectEnd - t.redirectStart;
+
+//dns查询耗时
+times.dnsTime = t.domainLookupEnd - t.domainLookupStart;
+
+//TTFB 读取页面第一个字节的时间
+times.ttfbTime = t.responseStart - t.navigationStart;
+
+//DNS 缓存时间
+times.appcacheTime = t.domainLookupStart - t.fetchStart;
+
+//卸载页面的时间
+times.unloadTime = t.unloadEventEnd - t.unloadEventStart;
+
+//tcp连接耗时
+times.tcpTime = t.connectEnd - t.connectStart;
+
+//request请求耗时
+times.reqTime = t.responseEnd - t.responseStart;
+
+//解析dom树耗时
+times.analysisTime = t.domComplete - t.domInteractive;
+
+//白屏时间 
+times.blankTime = (t.domInteractive || t.domLoading) - t.fetchStart;
+
+//首屏时间
+times.domReadyTime = t.domContentLoadedEventEnd - t.fetchStart;
+
+```
+
+### 阶段三：SPA时代
+Navigation Timing API可以监控大部分前端页面的性能。但随着SPA模式的盛行，类似vue，reactjs等框架的普及，页面内容渲染的时机被改变了
 
 ## 异常监控
 
