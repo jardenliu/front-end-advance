@@ -1,11 +1,69 @@
 # 前端监控与上报
 
 ## 前言
-用户体验作为产品质量的重要标准，前端监控对产品的质量和整体的用户体验至关重要。项目上线后，通常都是都会做埋点，做数据监控、异常监控以及性能监控。
+&#8195;&#8195;对于前端项目来说，一旦上线之后，就像一个黑盒子一样，我们完全不知道用户在我们的项目里边做了什么，跳转到哪里，是不是报错了。一旦生产环境的用户出现问题，而我们又难以复现问题的时候，才能体会到什么叫绝望。由此可见，我们需要对我们的前端产品进行全方位的把控，让它成为一个百盒子。让我们能更好的收集用户的行为趋势、产品的实际体验、异常出没的位置等等。
+
+&#8195;&#8195;前端监控的出现，能极大提高我们解决问题的能力，更有利于优化产品的整体质量与水平，常见的前端监控有以下三种：
+- 行为监控
+- 性能监控
+- 异常监控
+
+## 行为监控
+
 
 
 ## 性能监控
+&#8195;&#8195;一个页面性能差的话会大大影响用户体验。用户打开页面等待的太久，可能会直接关掉页面，甚至就不再使用了，这种情况在移动端更加明显，移动端用户对页面响应延迟容忍度很低。
+
+&#8195;&#8195;虽然页面性能很重要，但是在实际使用中，页面性能差的情况并不少见。首先，在产品的迭代演进过程中，页面性能可能会被忽略，性能随着版本迭代而有所衰减；其次，性能优化是一项复杂而挑战的事情，需要明确的优化方向和具体的优化手段才能快速落地取效。
+
+&#8195;&#8195;所以我们需要一个性能监控系统，持续监控和预警页面性能的状况，并且在发现瓶颈的时候指导优化工作。
+
+### 阶段1：打点时代
+大概的做法就是：手动打点，分别在页头和首屏dom节点处new Date()打点，计算差值，作为首屏时间，再加上setTimeout(new Date(), 0)标记首屏可交互时间
+
+### 阶段2：Navigation Timing API
+&#8195;&#8195;为了帮助开发者更好地衡量和改进前端页面性能，W3C性能小组引入了 Navigation Timing API ，实现了自动、精准的页面性能打点；开发者可以通过 window.performance 属性获取。
+- `performance.timing` 接口（定义了从 `navigationStart` 至 `loadEventEnd` 的 21 个只读属性）
+- `performance.navigation`（定义了当前文档的导航信息，比如是重载还是向前向后等
+  
+下图是W3C第一版的 Navigation Timing 的处理模型。从当前浏览器窗口卸载旧页面开始，到新页面加载完成，整个过程一共被切分为 9 个小块：提示卸载旧文档、重定向/卸载、应用缓存、DNS 解析、TCP 握手、HTTP 请求处理、HTTP 响应处理、DOM 处理、文档装载完成。每个小块的首尾、中间做事件分界，取 Unix 时间戳，两两事件之间计算时间差，从而获取中间过程的耗时（精确到毫秒级别）。
+
+![图1](https://raw.githubusercontent.com/jardenliu/front-end-advance/master/monitor/image/performance1.jpg)
+
+下图是精度更高，功能更强大，层次更分明的 Level 2模型，独立划分出来的 Resource Timing，使得我们可以获取具体资源的详细耗时信息
+
+![图2](https://raw.githubusercontent.com/jardenliu/front-end-advance/master/monitor/image/performance2.svg)
+
+#### 指标解读
+| 指标                       | 描述                                                                         |
+| -------------------------- | ---------------------------------------------------------------------------- |
+| navigationStart            | 准备加载页面的起始时间                                                       |
+| unloadEventStart           | 如果前一个文档和当前文档同源,返回前一个文档开始unload的时间                  |
+| unloadEventEnd             | 如果前一个文档和当前文档同源,返回前一个文档开始unload结束的时间              |
+| redirectStart              | 如果有重定向,这里是重定向开始的时间.                                         |
+| redirectEnd                | 如果有重定向,这里是重定向结束的时间.                                         |
+| fetchStart                 | 开始检查缓存或开始获取资源的时间                                             |
+| domainLookUpStart          | 准备加载页面的起始时间                                                       |
+| domainLookUpEnd            | DNS查询开始时间                                                              |
+| connectStart               | Http(TCP)开始/重新建立连接的时间，如果是持久连接，与fetchStart相同           |
+| connectEnd                 | Http(TCP)开始/重新建立连接的时间，完成握手，如果是持久连接，与fetchStart相同 |
+| secureConnectionStart      | 如果是https请求.返回ssl握手的时间                                            |
+| requestStart               | 开始请求文档时间(包括从服务器,本地缓存请求)                                  |
+| responseStart              | 接收到第一个字节的时间                                                       |
+| responseEnd                | 接收到最后一个字节的时间.                                                    |
+| domLoading                 | ‘document readyState’ 设置为 loading的时间                                   |
+| domInteractive             | 文档解析结束的时间                                                           |
+| domContentLoadedEventStart | DOMContentLoaded事件开始的时间                                               |
+| domContentLoadedEventEnd   | DOMContentLoaded事件结束的时间                                               |
+| domComplete                | ‘document readyState’ 设置为 complete 的时间                                 |
+| loadEventStart             | 触发onload事件的时间                                                         |
+| loadEventEnd               | onload事件结束的时间                                                         |
+| domLoading                 | 准备加载页面的起始时间                                                       |
+
 
 
 
 ## 异常监控
+
+## 信息上报
