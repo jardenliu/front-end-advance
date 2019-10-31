@@ -62,7 +62,7 @@
 | domLoading                 | 准备加载页面的起始时间                                                       |
 
 #### 采集页面性能的关键指标
-使用上面的指标，我们可以计算许多重要的指标，如首字节的时间，页面加载时间，dns查找以及连接是否安全。我们把 Navigation Timing API 提供的指标做下归类，按照从上到下的时间流，右边的时刻标记了每个指标从哪里开始计算到哪里截止，比如，跳转时间 redirect 由 redirectEnd - redirectStart 计算得到，其他的类推。
+&#8195;&#8195;使用上面的指标，我们可以计算许多重要的指标，如首字节的时间，页面加载时间，dns查找以及连接是否安全。我们把 Navigation Timing API 提供的指标做下归类，按照从上到下的时间流，右边的时刻标记了每个指标从哪里开始计算到哪里截止，比如，跳转时间 redirect 由 redirectEnd - redirectStart 计算得到，其他的类推。
 
 ![图3](https://raw.githubusercontent.com/jardenliu/front-end-advance/master/monitor/image/performance3.bmp)
 
@@ -104,9 +104,9 @@ times.domReadyTime = t.domContentLoadedEventEnd - t.fetchStart;
 ```
 
 ### 阶段三：SPA时代
-Navigation Timing API可以监控大部分前端页面的性能。但随着SPA模式的盛行，类似vue，reactjs等框架的普及，页面内容渲染的时机被改变了,W3C标准无法完全满足原来的监控意义。
+&#8195;&#8195;Navigation Timing API可以监控大部分前端页面的性能。但随着SPA模式的盛行，类似vue，reactjs等框架的普及，页面内容渲染的时机被改变了,W3C标准无法完全满足原来的监控意义。
 
-目前W3C关于首屏统计已经进入了提议阶段，以Chrome为首的浏览器正在打造更能代表用户使用体验的FP()、FCP、FMP指标，并且逐步开放API。
+&#8195;&#8195;目前W3C关于首屏统计已经进入了提议阶段，以Chrome为首的浏览器正在打造更能代表用户使用体验的FP()、FCP、FMP指标，并且逐步开放API。
 
 - FP（First Paint）：首次绘制，标记浏览器渲染任何在视觉上不同于导航前屏幕内容的时间点, 仅有一个 div 根节点。
 - FCP（First Contentful Paint）：首次内容绘制，标记的是浏览器渲染第一针内容 DOM 的时间点，该内容可能是文本、图像、SVG 或者 \<canvas\> 等元素, 包含页面的基本框架，但没有数据内容。
@@ -119,9 +119,38 @@ Navigation Timing API可以监控大部分前端页面的性能。但随着SPA�
 3. 趋势计算：在 render 期间，根据 dom 的变化趋势推算 FMP 值
 
 ## 异常监控
+&#8195;&#8195;前端错误是第一指标，任何一个js错误都有可能导致阻塞，影响我们页面的正常运转。任何一个js异常的发生都会导致当前代码块不能正常执行。
+
+&#8195;&#8195;异常抛出的内容，是我们定位问题的关键。接下来我们介绍一下，常见的几种收集错误的方式.
+
+### 全局捕获
+&#8195;&#8195;可以通过全局监听异常来捕获，通过window.onerror或者addEventListener，看以下例子：
+```javascript
+/**
+ * @param  errorMessage 异常信息
+ * @param  scriptURI 异常脚本文件路径
+ * @param  lineNo 异常行号
+ * @param  columnNo 异常列号
+ * @param  error 异常堆栈信息
+ */
+window.onerror = function(errorMessage, scriptURI, lineNo, columnNo, error) {
+  console.log('errorMessage: ' + errorMessage); 
+  console.log('scriptURI: ' + scriptURI); 
+  console.log('lineNo: ' + lineNo);
+  console.log('columnNo: ' + columnNo); 
+  console.log('error: ' + error); 
+
+};
+
+window.addEventListener('error', (errorMessage) => {
+    console.log("errorMessage", errorMessage);
+})
+
+throw new Error('这是一个错误');
+```
 
 ## 信息上报
-收集到监控的数据以后，需要将数据发送给服务端。页面性能统计数据对丢失率要求比较低，且性能统计应该在尽量不影响主流程的逻辑和页面性能的前提下进行。
+&#8195;&#8195;收集到监控的数据以后，需要将数据发送给服务端。页面性能统计数据对丢失率要求比较低，且性能统计应该在尽量不影响主流程的逻辑和页面性能的前提下进行。
 
 ### 使用的img标签get请求
 
