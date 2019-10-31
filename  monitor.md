@@ -9,7 +9,7 @@
 - 异常监控
 
 ## 行为监控
-
+&#8195;&#8195;常见的行为监控有PV（Page View）,UV（Unique visitor）,VV（Visit View）,IP（Internet Protocol）、还有对一些根据实际业务需求相关的行为进行的监控。大多数的行为监控都是通过后端监控以及前端埋点捕获上报。在这里就不深入探讨了。
 
 
 ## 性能监控
@@ -27,7 +27,7 @@
 - `performance.timing` 接口（定义了从 `navigationStart` 至 `loadEventEnd` 的 21 个只读属性）
 - `performance.navigation`（定义了当前文档的导航信息，比如是重载还是向前向后等
   
-下图是W3C第一版的 Navigation Timing 的处理模型。从当前浏览器窗口卸载旧页面开始，到新页面加载完成，整个过程一共被切分为 9 个小块：提示卸载旧文档、重定向/卸载、应用缓存、DNS 解析、TCP 握手、HTTP 请求处理、HTTP 响应处理、DOM 处理、文档装载完成。每个小块的首尾、中间做事件分界，取 Unix 时间戳，两两事件之间计算时间差，从而获取中间过程的耗时（精确到毫秒级别）。
+&#8195;&#8195;下图是W3C第一版的 Navigation Timing 的处理模型。从当前浏览器窗口卸载旧页面开始，到新页面加载完成，整个过程一共被切分为 9 个小块：提示卸载旧文档、重定向/卸载、应用缓存、DNS 解析、TCP 握手、HTTP 请求处理、HTTP 响应处理、DOM 处理、文档装载完成。每个小块的首尾、中间做事件分界，取 Unix 时间戳，两两事件之间计算时间差，从而获取中间过程的耗时（精确到毫秒级别）。
 
 ![图1](https://raw.githubusercontent.com/jardenliu/front-end-advance/master/monitor/image/performance1.jpg)
 
@@ -198,7 +198,7 @@ window.setTimeout = function(callback, timeout) {
 
 
 ### 框架层解决方案（vue）
-使用Vue.config.errorHandler这样的Vue全局配置，可以在Vue指定组件的渲染和观察期间未捕获错误的处理函数。这个处理函数被调用时，可获取错误信息和Vue 实例。
+&#8195;&#8195;使用Vue.config.errorHandler这样的Vue全局配置，可以在Vue指定组件的渲染和观察期间未捕获错误的处理函数。这个处理函数被调用时，可获取错误信息和Vue 实例。
 
 ```js
 Vue.config.errorHandler = function (err, vm, info) {
