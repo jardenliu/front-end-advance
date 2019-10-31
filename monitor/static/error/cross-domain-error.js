@@ -1,1 +1,1 @@
-throw new Error('我是跨域错误')
+throw new Error('我是跨域脚本的错误')

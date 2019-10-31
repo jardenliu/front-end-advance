@@ -154,6 +154,64 @@ throw new Error('这是一个错误');
 
 ### 跨域脚本捕获异常
 通常情况下，我们会把静态资源，如JavaScript脚本放到专门的静态资源服务器，亦或者CDN，看以下例子：
+```html
+
+    <script>
+             window.onerror = function (errorMessage, scriptURI, lineNo, columnNo, error) {
+            console.log('errorMessage: ' + errorMessage);
+            console.log('scriptURI: ' + scriptURI);
+            console.log('lineNo: ' + lineNo);
+            console.log('columnNo: ' + columnNo);
+            console.log('error: ' + error);
+
+        };
+    </script>
+    <script src="http://cdndomain/cross-domain-error.js">
+    </script>
+</html>
+```
+结果显示，跨域之后`window.onerror`根本捕获不到正确的异常信息，而是统一返回一个`Script error`
+
+解决方案1：对script标签增加一个`crossorigin=”anonymous”`，并且服务器添加`Access-Control-Allow-Origin`。
+
+解决方案2：通过 Patch 原生方法来尽可能的捕获到错误，这也是很多监控脚本默认提供的能力。比如说我们可以通过如下代码来 Patch 原生的 setTimeout 方法：
+
+```js
+const prevSetTimeout = window.setTimeout;
+
+window.setTimeout = function(callback, timeout) {
+  const self = this;
+  return prevSetTimeout(function() {
+    try {
+      callback.call(this);
+    } catch (e) {
+      // 捕获到详细的错误，在这里处理日志上报等了逻辑
+      // ...
+      throw e;
+    }
+  }, timeout);
+} 
+
+
+```
+同理，我们还可以 Patch 更多的原生方法，比如 Array.prototype.forEach、setInterval、requestAnimationFrame等等。诚然这种方法能帮我们尽可能捕获到更多异常，但是因为 Patch 了 JavaScript 原生的方法，总是感觉会存在很多的不确定性。
+
+
+### 框架层解决方案（vue）
+使用Vue.config.errorHandler这样的Vue全局配置，可以在Vue指定组件的渲染和观察期间未捕获错误的处理函数。这个处理函数被调用时，可获取错误信息和Vue 实例。
+
+```js
+Vue.config.errorHandler = function (err, vm, info) {
+  // handle error
+  // `info` 是 Vue 特定的错误信息，比如错误所在的生命周期钩子
+  // 只在 2.2.0+ 可用
+}
+```
+> 从 2.2.0 起，这个钩子也会捕获组件生命周期钩子里的错误。同样的，当这个钩子是 undefined 时，被捕获的错误会通过 console.error 输出而避免应用崩溃。
+
+> 从 2.4.0 起，这个钩子也会捕获 Vue 自定义事件处理函数内部的错误了。
+
+> 从 2.6.0 起，这个钩子也会捕获 v-on DOM 监听器内部抛出的错误。另外，如果任何被覆盖的钩子或处理函数返回一个 Promise 链 (例如 async 函数)，则来自其 Promise 链的错误也会被处理。
 
 ## 信息上报
 &#8195;&#8195;收集到监控的数据以后，需要将数据发送给服务端。页面性能统计数据对丢失率要求比较低，且性能统计应该在尽量不影响主流程的逻辑和页面性能的前提下进行。
