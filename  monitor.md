@@ -72,6 +72,7 @@ let t = window.performance.timing;
 
 //重定向时间
 times.redirectTime = t.redirectEnd - t.redirectStart;
+console.log('重定向时间:', times.redirectTime)
 
 //dns查询耗时
 times.dnsTime = t.domainLookupEnd - t.domainLookupStart;
@@ -103,8 +104,24 @@ times.domReadyTime = t.domContentLoadedEventEnd - t.fetchStart;
 ```
 
 ### 阶段三：SPA时代
-Navigation Timing API可以监控大部分前端页面的性能。但随着SPA模式的盛行，类似vue，reactjs等框架的普及，页面内容渲染的时机被改变了
+Navigation Timing API可以监控大部分前端页面的性能。但随着SPA模式的盛行，类似vue，reactjs等框架的普及，页面内容渲染的时机被改变了,W3C标准无法完全满足原来的监控意义。
+
+目前W3C关于首屏统计已经进入了提议阶段，以Chrome为首的浏览器正在打造更能代表用户使用体验的FP()、FCP、FMP指标，并且逐步开放API。
+
+- FP（First Paint）：首次绘制，标记浏览器渲染任何在视觉上不同于导航前屏幕内容的时间点, 仅有一个 div 根节点。
+- FCP（First Contentful Paint）：首次内容绘制，标记的是浏览器渲染第一针内容 DOM 的时间点，该内容可能是文本、图像、SVG 或者 \<canvas\> 等元素, 包含页面的基本框架，但没有数据内容。
+- FMP（First Meaning Paint）: 首次有效绘制，标记主角元素渲染完成的时间点，主角元素可以是视频网站的视频控件，内容网站的页面框架也可以是资源网站的头图等。
+
+常见的进行`相对准确`的计算 FMP，所谓相对准确，是相对于实际项目而言。
+
+1. 主动上报：开发者在相应页面的「Meaning」位置上报时间
+2. 权重计算：根据页面元素，计算权重最高的元素渲染时间(计算指标以实际项目为准，常见的有`占位大小`，`可见性`等)
+3. 趋势计算：在 render 期间，根据 dom 的变化趋势推算 FMP 值
 
 ## 异常监控
 
 ## 信息上报
+收集到监控的数据以后，需要将数据发送给服务端。页面性能统计数据对丢失率要求比较低，且性能统计应该在尽量不影响主流程的逻辑和页面性能的前提下进行。
+
+### 使用的img标签get请求
+
