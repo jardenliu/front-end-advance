@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        window.addEventListener('error', (errorMessage) => {
+            console.log("errorMessage", errorMessage)
+        })
+        window.onerror = function (errorMessage, scriptURI, lineNo, columnNo, error) {
+            console.log('errorMessage: ' + errorMessage);
+            console.log('scriptURI: ' + scriptURI);
+            console.log('lineNo: ' + lineNo);
+            console.log('columnNo: ' + columnNo);
+            console.log('error: ' + error);
+
+        };
+        try {
+            throw new Error('这是一个错误');
+        } catch (e1) {
+            console.log("TCL: e1", e1)
+        }
+
+        // try {
+        //     setTimeout(() => {
+        //         throw new Error('这是setTimeout一个错误');
+        //     })
+
+        // } catch (e2) {
+        //     console.log("TCL: e2", e2)
+        // }
+
+        // try {
+        //     Promise.reject(new Error('这是Promise一个错误'))
+
+        // } catch (e3) {
+        //     console.log("TCL: e3", e3)
+        // }
+    </script>
+</body>
+
+</html>
