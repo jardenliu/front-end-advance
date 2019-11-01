@@ -150,10 +150,10 @@ throw new Error('这是一个错误');
 ```
 
 ### try...catch...
-使用`try... catch`虽然能够较好地进行异常捕获，不至于使得页面由于一处错误挂掉，但`try ... catch`捕获方式显得过于臃肿，大多代码使用`try ... catch`包裹，影响代码可读性。
+&#8195;&#8195;使用`try... catch`虽然能够较好地进行异常捕获，不至于使得页面由于一处错误挂掉，但`try ... catch`捕获方式显得过于臃肿，大多代码使用`try ... catch`包裹，影响代码可读性。
 
 ### 跨域脚本捕获异常
-通常情况下，我们会把静态资源，如JavaScript脚本放到专门的静态资源服务器，亦或者CDN，看以下例子：
+&#8195;&#8195;通常情况下，我们会把静态资源，如JavaScript脚本放到专门的静态资源服务器，亦或者CDN，看以下例子：
 ```html
 
     <script>
@@ -216,7 +216,7 @@ Vue.config.errorHandler = function (err, vm, info) {
 ## 信息上报
 
 ### 上报形式
-按照上报的频率（重要紧急度）可将上报分为四种：
+&#8195;&#8195;按照上报的频率（重要紧急度）可将上报分为四种：
 1. 即时上报:
    收集到日志后，立即触发上报函数。仅用于A类异常。而且由于受到网络不确定因素影响，A类日志上报需要有一个确认机制，只有确认服务端已经成功接收到该上报信息之后，才算完成。否则需要有一个循环机制，确保上报成功。
 2. 批量上报:
@@ -226,7 +226,7 @@ Vue.config.errorHandler = function (err, vm, info) {
 4. 用户主动提交:
    在界面上提供一个按钮，用户主动反馈bug。这有利于加强与用户的互动。
 
-错误收集时，常需要存储错误日志，持久化方案可选项也比较多了，主要有：Cookie、localStorage、sessionStorage、IndexedDB、webSQL 、FileSystem 等等。那么该如何选择呢？我们通过一个表来进行对比：
+&#8195;&#8195;错误收集时，常需要存储错误日志，持久化方案可选项也比较多了，主要有：Cookie、localStorage、sessionStorage、IndexedDB、webSQL 、FileSystem 等等。那么该如何选择呢？我们通过一个表来进行对比：
 
 
 | 存储方式 | cookie    | localStorage | sessionStorage | IndexedDB  | webSQL | FileSystem |
@@ -238,7 +238,7 @@ Vue.config.errorHandler = function (err, vm, info) {
 | 检索     |           | key          | key            | key, index | field  |
 | 性能     |           | 读快写慢     |                | 读慢写快   |
 
-综合之后，IndexedDB是最好的选择，它具有容量大、异步的优势，异步的特性保证它不会对界面的渲染产生阻塞。而且IndexedDB是分库的，每个库又分store，还能按照索引进行查询，具有完整的数据库管理思维，比localStorage更适合做结构化数据管理。但是它有一个缺点，就是api非常复杂，不像localStorage那么简单直接。
+&#8195;&#8195;综合之后，IndexedDB是最好的选择，它具有容量大、异步的优势，异步的特性保证它不会对界面的渲染产生阻塞。而且IndexedDB是分库的，每个库又分store，还能按照索引进行查询，具有完整的数据库管理思维，比localStorage更适合做结构化数据管理。但是它有一个缺点，就是api非常复杂，不像localStorage那么简单直接。
 
 
 ### 常用的上报方式
