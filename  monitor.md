@@ -214,7 +214,57 @@ Vue.config.errorHandler = function (err, vm, info) {
 > 从 2.6.0 起，这个钩子也会捕获 v-on DOM 监听器内部抛出的错误。另外，如果任何被覆盖的钩子或处理函数返回一个 Promise 链 (例如 async 函数)，则来自其 Promise 链的错误也会被处理。
 
 ## 信息上报
-&#8195;&#8195;收集到监控的数据以后，需要将数据发送给服务端。页面性能统计数据对丢失率要求比较低，且性能统计应该在尽量不影响主流程的逻辑和页面性能的前提下进行。
 
-### 使用的img标签get请求
+### 上报形式
+按照上报的频率（重要紧急度）可将上报分为四种：
+1. 即时上报:
+   收集到日志后，立即触发上报函数。仅用于A类异常。而且由于受到网络不确定因素影响，A类日志上报需要有一个确认机制，只有确认服务端已经成功接收到该上报信息之后，才算完成。否则需要有一个循环机制，确保上报成功。
+2. 批量上报:
+   将收集到的日志存储在本地，当收集到一定数量之后再打包一次性上报，或者按照一定的频率（时间间隔）打包上传。这相当于把多次合并为一次上报，以降低对服务器的压力。
+3. 区块上报:
+   将一次异常的场景打包为一个区块后进行上报。它和批量上报不同，批量上报保证了日志的完整性，全面性，但会有无用信息。而区块上报则是针对异常本身的，确保单个异常相关的日志被全部上报。
+4. 用户主动提交:
+   在界面上提供一个按钮，用户主动反馈bug。这有利于加强与用户的互动。
 
+错误收集时，常需要存储错误日志，持久化方案可选项也比较多了，主要有：Cookie、localStorage、sessionStorage、IndexedDB、webSQL 、FileSystem 等等。那么该如何选择呢？我们通过一个表来进行对比：
+
+
+| 存储方式 | cookie    | localStorage | sessionStorage | IndexedDB  | webSQL | FileSystem |
+| -------- | --------- | ------------ | -------------- | ---------- | ------ | ---------- |
+| 类型     | key-value | key-value    | NoSQL          | SQL        |
+| 数据格式 | string    | string       | string         | object     |
+| 容量     | 4k        | 5M           | 5M             | 500M       | 60M    |
+| 进程     | 同步      | 同步         | 同步           | 异步       | 异步   |
+| 检索     |           | key          | key            | key, index | field  |
+| 性能     |           | 读快写慢     |                | 读慢写快   |
+
+综合之后，IndexedDB是最好的选择，它具有容量大、异步的优势，异步的特性保证它不会对界面的渲染产生阻塞。而且IndexedDB是分库的，每个库又分store，还能按照索引进行查询，具有完整的数据库管理思维，比localStorage更适合做结构化数据管理。但是它有一个缺点，就是api非常复杂，不像localStorage那么简单直接。
+
+
+### 常用的上报方式
+
+1. 使用的img标签
+- 请求图片并不涉及到跨域的问题；
+```javascript
+  var url = 'xxx';
+  new Image().src = url;
+```
+2. Ajax上报日志
+```javascript
+ window.addEventListener('unload', logData, false);
+
+  function logData() {
+      navigator.sendBeacon("/log", analyticsData);
+  }
+```
+
+
+3. navigator.sendBeacon
+```js
+window.addEventListener('unload', logData, false);
+
+function logData() {
+    navigator.sendBeacon("/log", analyticsData);
+}
+
+```
