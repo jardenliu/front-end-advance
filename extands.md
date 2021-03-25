@@ -53,3 +53,33 @@ console.log(instance2.color); // [ 'red', 'white', 'black', 'orange' ]
 ```
 
 `instance1`和`instance2`共享原型对象的`colors`属性，这种相互影响的情况是程序设计当中应该尽量避免的。原型链继承的另一个问题是，子类在实例化时无法给父类构造函数传递参数。
+
+### 经典继承（盗用构造函数）
+为了解决原型链继承中，引用类型相互影响和无法向父类构造函数传递参数的问题，衍生出了盗用构造函数的技巧。许多时候这种技巧也被称为经典继承。它会在子类中调用父类的构造函数并使用call和apply方法指定this  让子类实例化的时候先执行父类的构造函数。
+
+```js
+function Parent(name) {
+  this.name = name;
+  this.color = ["white", "red"];
+}
+
+function Child(name, age) {
+  Parent.call(this, name);
+  this.age = age;
+}
+
+const instance1 = new Child("foo", 20);
+instance1.color.push("blue");
+
+console.log(instance1.name); // foo
+console.log(instance1.age); // 20
+console.log(instance1.color); // [ 'white', 'red', 'blue' ]
+
+const instance2 = new Child("bar", 36);
+instance2.color.push("black");
+console.log(instance2.name); // ibar
+console.log(instance2.age); // 36
+console.log(instance2.color); // [ 'white', 'red', 'black' ]
+
+```
+上面的例子为我们展现了如何盗用构造函数，这种技术其实相当于借用了父类的构造函数的初始化逻辑。当我们在执行子类实例化时，用`call`或 `apply`改变了`this`的指向。当父类构造函数执行时相当于在给子类实例对象添加属性。这样操作以后引用类型的属性是独立存在于各个实例对象当中的。与原型对象无关，自然没有相互影响的问题了。
