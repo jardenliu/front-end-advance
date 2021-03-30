@@ -83,3 +83,43 @@ console.log(instance2.color); // [ 'white', 'red', 'black' ]
 
 ```
 上面的例子为我们展现了如何盗用构造函数，这种技术其实相当于借用了父类的构造函数的初始化逻辑。当我们在执行子类实例化时，用`call`或 `apply`改变了`this`的指向。当父类构造函数执行时相当于在给子类实例对象添加属性。这样操作以后引用类型的属性是独立存在于各个实例对象当中的。与原型对象无关，自然没有相互影响的问题了。
+
+### 组合继承
+
+组合继承其实就是将原型链继承和经典继承相结合，通过互补规避各自的缺点
+
+```js
+
+function Parent(name) {
+  this.name = name;
+  this.color = ["white", "red"];
+}
+
+Parent.prototype.getColor = function () {
+  return this.color;
+};
+
+function Child(name, age) {
+  Parent.call(this, name);
+  this.age = age;
+}
+
+Child.prototype = new Parent();
+
+const instance1 = new Child("foo", 20);
+instance1.color.push("blue");
+
+console.log(instance1.name); // foo
+console.log(instance1.age); // 20
+console.log(instance1.getColor()); // [ 'white', 'red', 'blue' ]
+
+const instance2 = new Child("bar", 36);
+instance2.color.push("black");
+console.log(instance2.name); // ibar
+console.log(instance2.age); // 36
+console.log(instance2.getColor()); // [ 'white', 'red', 'black' ]
+
+```
+组合继承通过原型链继承，实现了访问原型的对象方法；又通过经典继承在实例对象上生成了color属性，从而遮蔽了Child对象上color属性，这样实例修改就不会相互影响了
+
+
