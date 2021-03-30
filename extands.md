@@ -123,3 +123,34 @@ console.log(instance2.getColor()); // [ 'white', 'red', 'black' ]
 组合继承通过原型链继承，实现了访问原型的对象方法；又通过经典继承在实例对象上生成了color属性，从而遮蔽了Child对象上color属性，这样实例修改就不会相互影响了
 
 
+### 原型式继承
+如果你希望通过[[Prototype]]实现对象之间的信息共享，那么你可以了解下原型式继承。实现方法如下：
+```js
+function extObj(obj) {
+  function Fn() {}
+  Fn.prototype = obj;
+  return new Fn();
+}
+
+const originObj = {
+  name: "origin",
+  color: ["red", "black"],
+};
+
+const newObj = extObj(originObj);
+const newObj2 = extObj(originObj);
+
+console.log(newObj.name); // origin
+console.log(newObj2.name); // origin
+
+newObj.name = "new";
+newObj.color.push("blue");
+
+console.log(newObj.name); // new
+console.log(newObj2.name); // origin
+console.log(newObj.color); // [ 'red', 'black', 'blue' ]
+console.log(newObj2.color); // [ 'red', 'black', 'blue' ]
+
+```
+原型继承需要借助一个工具函数，这个函数会将传入的对象作为临时构造函数Fn的原型对象，然后返回临时的构造函数的实例。此时这个实例对象就和一开始传入的对象产生了关联关系。原型式的继承同样存在对象上引用类型的问题。
+上述例子中工具函数是我们自己创建的，在ES5当中可以通过Object.create()实现原型继承，并且可以通过该函数的第二个参数显示指定函数对象的属性。
