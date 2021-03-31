@@ -154,3 +154,83 @@ console.log(newObj2.color); // [ 'red', 'black', 'blue' ]
 ```
 原型继承需要借助一个工具函数，这个函数会将传入的对象作为临时构造函数Fn的原型对象，然后返回临时的构造函数的实例。此时这个实例对象就和一开始传入的对象产生了关联关系。原型式的继承同样存在对象上引用类型的问题。
 上述例子中工具函数是我们自己创建的，在ES5当中可以通过Object.create()实现原型继承，并且可以通过该函数的第二个参数显示指定函数对象的属性。
+
+### 寄生式继承
+
+寄生式继承可以看做是原型式继承的变式。他通过包覆函数来增强实例对象，为实例对象添加更多的功能。
+
+```js
+const oriObj = {
+  name: "origin",
+};
+
+function createObj(obj) {
+  const o = Object.create(obj);
+  o.sayName = function () {
+    console.log(this.name);
+  };
+  return o;
+}
+
+const obj = createObj(oriObj);
+
+obj.sayName(); // origin
+
+
+```
+
+### 寄生组合继承
+
+寄生式组合继承为了解决组合继承的效率问题（两次调用构造函数）。组合继承当中父类的构造函数始终被调用两次。请看实例：
+```js
+function Parent(name) {
+  this.name = name;
+  this.color = ["white", "red"];
+}
+
+Parent.prototype.getColor = function () {
+  return this.color;
+};
+
+function Child(name, age) {
+  Parent.call(this, name); // 第二次调用Parent的构造函数
+  this.age = age;
+}
+
+Child.prototype = new Parent(); // 第一次调用Parent的构造函数
+
+const instance1 = new Child("foo", 20);
+
+```
+
+为了解决这个问题，我们可以使用寄生式的思想来代替父类构造函数第一次调用生成实例对象的操作。我们创建一个包装函数，它会使用父类原型对象来创建一个新对象，然后将这个新对象关联到子类原型对象上，这样父类构造函数就不用调用两次了。
+
+```js
+function inheritParent(parent, child) {
+  const prototype = Object.create(parent.prototype);
+  prototype.constructor = child;
+  child.prototype = prototype;
+}
+
+function Parent(name) {
+  this.name = name;
+  this.color = ["white", "red"];
+}
+
+Parent.prototype.getColor = function () {
+  return this.color;
+};
+
+function Child(name, age) {
+  Parent.call(this, name);
+  this.age = age;
+}
+
+inheritParent(Parent, Child);
+
+const instance1 = new Child("foo", 20);
+console.log(instance1.getColor());
+
+```
+寄生式组合继承解决了父类构造函数多次被调用的问题，可以算是现阶段继承的最佳模式。
+
