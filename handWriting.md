@@ -56,3 +56,34 @@ function throttling(wait = 50, noTrailing = false, fn: Function) {
 }
 
 ```
+
+### flat 扁平化
+> 可以理解为将一个多层的数组变成少层的数组
+
+```js
+
+function flaten(arr, depth) {
+  let a = [];
+  if (depth === 0) return arr;
+
+  for (let i = 0; i < arr.length; i++) {
+    const item = arr[i];
+    if (Array.isArray(item)) {
+      a = a.concat(flaten(item, depth - 1));
+    } else {
+      a.push(item);
+    }
+  }
+
+  return a;
+}
+
+Array.prototype._flat = function (depth) {
+  let arr = this;
+  const dep = Number(depth);
+  depth = isNaN(dep) ? 1 : Math.floor(dep);
+  depth = depth >= 0 ? depth : 0;
+
+  return flaten(arr, depth);
+};
+```
