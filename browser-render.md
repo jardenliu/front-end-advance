@@ -230,8 +230,8 @@ el.style.cssText += "; left: " + left + "px;top: " + top + "px;";
 ```
 2. 让要操作的元素进行”离线处理”，处理完后一起更新
     1. 使用DocumentFragment进行缓存操作,引发一次回流和重绘；
-    2. 使用display:none技术，只引发两次回流和重绘；
-    3. 使用cloneNode(true or false) 和 replaceChild 技术，引发一次回流和重绘；
+    2. 使用display:none，只引发两次回流和重绘；
+    3. 使用cloneNode(true or false) 和 replaceChild ，引发一次回流和重绘；
 
 3. 让元素脱离动画流，减少回流的Render Tree的规模
 
